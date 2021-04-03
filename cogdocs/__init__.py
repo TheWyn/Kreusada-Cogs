@@ -33,13 +33,12 @@ class CogDocs(commands.Cog):
         if cog not in self.bot.cogs:
             return await ctx.send(f"`{cog}`` cog not found.")
         obj = self.bot.get_cog(cog)
-        compose = f"""
-.. _{obj.qualified_name.lower()}:
+        compose = f""".. _{obj.qualified_name.lower()}:
 
 {self.header(obj.qualified_name, '=')}
 
-This is the cog guide for the {obj.qualified_name.lower()} cog, for {len([x for x in obj.walk_commands()])} commands.
-Throughout the guide, ``[p]`` will be considered as your prefix.
+This is the cog guide for the {obj.qualified_name.lower()} cog.
+Throughout this guide, ``[p]`` will be considered as your prefix.
 
 {self.header("Installation", "-")}
 
@@ -56,12 +55,24 @@ Finally, you can see my end user data statements, cog requirements, and other co
 * :code:`[p]cog info kreusada {obj.qualified_name.lower()}`
 """
         if obj.__cog_description__:
-            compose += '\n' + self.header("Usage", "-") + '\n\n' + obj.__cog_description__
+            compose += f"""
+{self.header("Usage", "-")}
+
+{obj.__cog_description__}
+
+"""
         else:
             compose += '\n'
         if not obj.walk_commands():
             compose += '\n' + footer
         else:
+            compose += f""".. _{obj.qualified_name.lower()}-commands:
+
+{self.header("Commands", "-")}
+
+Here is a list of all commands available for this cog. 
+There are {len([x for x in obj.walk_commands()])} in total.
+"""
             for command in sorted([str(x) for x in obj.walk_commands()], key=len):
                 command_obj = self.bot.get_command(command)
 
