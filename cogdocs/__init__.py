@@ -1,8 +1,9 @@
+import asyncio
 import io
 
 import discord
 from redbot.core import commands
-from redbot.core.utils.chat_formatting import box
+from redbot.core.utils.chat_formatting import box, pagify
 
 footer = """
 ----------------------
@@ -27,6 +28,35 @@ class CogDocs(commands.Cog):
         self.header = lambda x, y: y * len(x) + '\n' + x + '\n' + y * len(x)
         self.tag_transform = lambda x: x.replace(' ','-')
         self.issubcommand = lambda x: ' ' in x
+
+    @commands.command()
+    async def changelog(self, ctx, date: str):
+        """
+        Create items for a changelog entry.
+        
+        Type `stop` to stop generating changelogs.
+        """
+
+        def check(x):
+            return x.author == ctx.author and x.channel == ctx.channel
+
+        data = []
+        await ctx.send("Start adding changes for this changelog entry. Type `stop` to end the process.")
+        while True:
+            try:
+                content = await self.bot.wait_for("message", timeout=30, check=check)
+            except asyncio.TimeoutError:
+                return await ctx.send("You took too long to respond.")
+            if content.content.lower() == "stop":
+                break
+            else:
+                await content.add_reaction("\N{WHITE HEAVY CHECK MARK}")
+                data.append(content.content)
+        composed = f"{self.header(date, '-')}\n\n"
+        for cl in data:
+            composed += f"* {cl}\n"
+        await ctx.send(box(composed, lang="asciidoc"))
+
 
     @commands.command()
     async def cogdoc(self, ctx, cog: str):
