@@ -10,7 +10,7 @@ class Red(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    async def docs(self, ctx, cog: str = None, command: str = None):
+    async def docs(self, ctx, cog: str = None, *, command: str = None):
         """Get the docs for my cogs."""
         base = "https://kreusadacogs.readthedocs.io/en/latest/"
         if not cog or not command:
@@ -18,6 +18,7 @@ class Red(commands.Cog):
         if cog:
             base += f"cog_{cog}.html"
         if commmand:
-            base += f"#{cog}-command{command}"
+
+            base += f"#{cog}-command{"-".join(command)}"
         await ctx.send(base)
 
