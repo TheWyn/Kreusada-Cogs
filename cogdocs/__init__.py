@@ -1,4 +1,5 @@
 import asyncio
+import datetime
 import io
 
 import discord
@@ -36,7 +37,8 @@ class CogDocs(commands.Cog):
         
         Type `stop` to stop generating changelogs.
         """
-
+        if date.lower() == "today":
+            date = datetime.datetime.now().strftime("%d/%m/%Y")
         def check(x):
             return x.author == ctx.author and x.channel == ctx.channel
 
