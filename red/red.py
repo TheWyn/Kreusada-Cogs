@@ -18,7 +18,5 @@ class Red(commands.Cog):
         if cog:
             base += f"cog_{cog}.html"
         if commmand:
-
-            base += f"#{cog}-command{"-".join(command)}"
+            base += f"#{cog}-command{'-'.join(command)}"
         await ctx.send(base)
-
