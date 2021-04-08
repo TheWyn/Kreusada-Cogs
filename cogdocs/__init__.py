@@ -29,6 +29,14 @@ class CogDocs(commands.Cog):
         self.header = lambda x, y: y * len(x) + '\n' + x + '\n' + y * len(x)
         self.tag_transform = lambda x: x.replace(' ','-')
         self.issubcommand = lambda x: ' ' in x
+        self.issue_template = "https://github.com/Kreusada/Kreusada-Cogs/issues/{}"
+
+    def format_issues_and_prs(self, content):
+        for x in content.split():
+            num = x.strip('#')
+            if x.startswith('#') and num.isdigit():
+                content = content.replace(x, f"(`{x} <{self.issue_template.format(num)}>`_)")
+        return content
 
     @commands.command()
     async def changelog(self, ctx, date: str):
@@ -56,7 +64,7 @@ class CogDocs(commands.Cog):
                 data.append(content.content)
         composed = f"{self.header(date, '-')}\n\n"
         for cl in data:
-            composed += f"* {cl}\n"
+            composed += f"* {self.format_issues_and_prs(cl)}\n"
         await ctx.send(box(composed, lang="asciidoc"))
 
 
