@@ -54,7 +54,7 @@ class CogDocs(commands.Cog):
         await ctx.send("Start adding changes for this changelog entry. Type `stop` to end the process.")
         while True:
             try:
-                content = await self.bot.wait_for("message", timeout=30, check=check)
+                content = await self.bot.wait_for("message", timeout=500, check=check)
             except asyncio.TimeoutError:
                 return await ctx.send("You took too long to respond.")
             if content.content.lower() == "stop":
