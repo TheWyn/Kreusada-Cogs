@@ -67,7 +67,7 @@ class RoleBoards(commands.Cog):
         g = ctx.guild
         data = self.get_users(g, index)
         message = "\n".join(f"#{self.td(c)} [{self.td(v[1])}] {v[0]}" for c, v in enumerate(data, 1))
-        for page in pagify(message, page_length=1990):
+        for _ in pagify(message, page_length=1990):
             await ctx.send(box(message, lang="css"))
 
     @roleboard.command()
@@ -76,7 +76,7 @@ class RoleBoards(commands.Cog):
         g = ctx.guild
         data = self.get_roles(g, index)
         message = "\n".join(f"#{self.td(c)} [{self.td(v[1])}] {v[0]}" for c, v in enumerate(data, 1))
-        for page in pagify(message, page_length=1990):
+        for _ in pagify(message, page_length=1990):
             await ctx.send(box(message, lang="css"))
 
     @staticmethod

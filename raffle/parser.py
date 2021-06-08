@@ -61,34 +61,31 @@ class RaffleManager(object):
                 raise BadArgument("Join age days must be less than this guild's creation date")
 
 
-        if self.maximum_entries:
-            if not isinstance(self.maximum_entries, int):
-                raise BadArgument("Maximum entries must be int, not {}".format(type(self.maximum_entries).__name__))
+        if self.maximum_entries and not isinstance(self.maximum_entries, int):
+            raise BadArgument("Maximum entries must be int, not {}".format(type(self.maximum_entries).__name__))
 
 
-        if self.name:
-            if not isinstance(self.name, str):
-                raise BadArgument("Name must be str, not {}".format(type(self.name).__name__))
-            if len(self.name) > 25:
-                raise BadArgument("Name must be under 25 characters, your raffle name had {}".format(len(self.name)))
-            for char in self.name:
-                if char == "_":
-                    # We want to allow underscores
-                    continue
-                if not char.isalnum():
-                    index = self.name.index(char)
-                    marker = (
-                        f"{self.name}\n{' ' * (index)}^\n"
-                        f"Characters must be alphanumeric or underscores, not \"{char}\""
-                    )
-                    raise RaffleSyntaxError(f"In \"name\" field, character {index+1}\n\n{marker}")
-        else:
+        if not self.name:
             raise RequiredKeyError("name")
 
 
-        if self.description:
-            if not isinstance(self.description, str):
-                raise BadArgument("Description must be str, not {}".format(type(self.description).__name__))
+        if not isinstance(self.name, str):
+            raise BadArgument("Name must be str, not {}".format(type(self.name).__name__))
+        if len(self.name) > 25:
+            raise BadArgument("Name must be under 25 characters, your raffle name had {}".format(len(self.name)))
+        for char in self.name:
+            if char == "_":
+                # We want to allow underscores
+                continue
+            if not char.isalnum():
+                index = self.name.index(char)
+                marker = (
+                    f"{self.name}\n{' ' * (index)}^\n"
+                    f"Characters must be alphanumeric or underscores, not \"{char}\""
+                )
+                raise RaffleSyntaxError(f"In \"name\" field, character {index+1}\n\n{marker}")
+        if self.description and not isinstance(self.description, str):
+            raise BadArgument("Description must be str, not {}".format(type(self.description).__name__))
 
 
         if self.roles_needed_to_enter:

@@ -89,7 +89,7 @@ class Locales(commands.Cog):
         """Get the number of speakers/writers for a language."""
         language_code = language_code.split('-')[0]
         with contextlib.suppress(LanguageTagError):
-            if not writing_or_speaking.lower()[0] in ["s", "w"]:
+            if writing_or_speaking.lower()[0] not in ["s", "w"]:
                 return await ctx.send(f"Please specify 'writing' or 'speaking', not '{writing_or_speaking}''.")
             country_name = await self.get_country_from_locale(ctx, language_code)
             if not country_name:

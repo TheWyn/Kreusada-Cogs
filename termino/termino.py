@@ -189,10 +189,11 @@ class Termino(commands.Cog):
     async def settings(self, ctx: commands.Context):
         """See the current settings for termino."""
         config = await self.config.all()
-        footer = False
-        for x in [config["restart_message"], config["shutdown_message"]]:
-            if "{author}" in x:
-                footer = True
+        footer = any(
+            "{author}" in x
+            for x in [config["restart_message"], config["shutdown_message"]]
+        )
+
         message = (
             f"Shutdown message: {config['shutdown_message']}\n"
             f"Shutdown confirmation: {config['confirm_shutdown']}\n\n"

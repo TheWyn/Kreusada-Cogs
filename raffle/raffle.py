@@ -102,7 +102,7 @@ class Raffle(commands.Cog):
                             getter.remove(roleid)
                             updates["roles_needed_to_enter"] = True
 
-            return any([updates[x] for x in list(updates.keys())])
+            return any(updates[x] for x in list(updates.keys()))
 
 
     def format_help_for_context(self, ctx: commands.Context) -> str:
@@ -134,10 +134,12 @@ class Raffle(commands.Cog):
 
 
     async def compose_menu(self, ctx, embed_pages: List[discord.Embed]):
-        if len(embed_pages) == 1:
-            control = {"\N{CROSS MARK}": close_menu}
-        else:
-            control = DEFAULT_CONTROLS
+        control = (
+            {"\N{CROSS MARK}": close_menu}
+            if len(embed_pages) == 1
+            else DEFAULT_CONTROLS
+        )
+
         return await menu(ctx, embed_pages, control)
 
 
@@ -372,7 +374,7 @@ class Raffle(commands.Cog):
 
         if raffle_entities("roles_needed_to_enter"):
             for r in raffle_entities("roles_needed_to_enter"):
-                if not r in [x.id for x in ctx.author.roles]:
+                if r not in [x.id for x in ctx.author.roles]:
                     return await ctx.send("You are missing a required role: {}".format(ctx.guild.get_role(r).mention))
 
 
@@ -404,7 +406,7 @@ class Raffle(commands.Cog):
 
             raffle_entries = raffle_data.get("entries")
 
-            if not ctx.author.id in raffle_entries:
+            if ctx.author.id not in raffle_entries:
                 return await ctx.send("You are not entered into this raffle.")
 
             raffle_entries.remove(ctx.author.id)
@@ -428,7 +430,7 @@ class Raffle(commands.Cog):
 
             raffle_entities = lambda x: raffle_data.get(x)
 
-            if not ctx.author.id == raffle_entities("owner"):
+            if ctx.author.id != raffle_entities("owner"):
                 return await ctx.send("You are not the owner of this raffle.")
 
             if not raffle_entities("entries"):
@@ -455,8 +457,8 @@ class Raffle(commands.Cog):
 
             msg = await ctx.send(f"Ending the `{raffle}` raffle...")
             raffle_owner = raffle_data.get("owner")
-            
-            if not ctx.author.id == raffle_owner:
+
+            if ctx.author.id != raffle_owner:
                 return await ctx.send("You are not the owner of this raffle.")
 
             r.pop(raffle)
@@ -495,7 +497,7 @@ class Raffle(commands.Cog):
 
             raffle_entities = lambda x: raffle_data.get(x)
 
-            if not ctx.author.id == raffle_entities("owner"):
+            if ctx.author.id != raffle_entities("owner"):
                 return await ctx.send("You are not the owner of this raffle.")
 
             if member.id not in raffle_entities("entries"):
@@ -854,13 +856,12 @@ class Raffle(commands.Cog):
                 return await ctx.send("There is not an ongoing raffle with the name `{}`.".format(raffle))
 
             if isinstance(new_account_age, bool):
-                if not new_account_age:
-                    with contextlib.suppress(KeyError):
-                        del raffle_data["account_age"]
-                    return await ctx.send("Account age requirement removed from this raffle.")
-                else:
+                if new_account_age:
                     return await ctx.send("Please provide a number, or \"false\" to disable this condition.")
 
+                with contextlib.suppress(KeyError):
+                    del raffle_data["account_age"]
+                return await ctx.send("Account age requirement removed from this raffle.")
             try:
                 RaffleManager.parse_accage(new_account_age)
             except BadArgument as e:
@@ -964,7 +965,7 @@ class Raffle(commands.Cog):
                 return await ctx.send("Please provide a number, or \"false\" to disable the description.")
 
             else:
-                if not on_end_action in ("end", "remove_winner", "keep_winner"):
+                if on_end_action not in ("end", "remove_winner", "keep_winner"):
                     return await ctx.send("Please provide one of `end`, `remove_winner`, or `keep_winner`.")
                 raffle_data["on_end_action"] = on_end_action
                 await ctx.send("On end action updated for this raffle.")
@@ -1050,7 +1051,7 @@ class Raffle(commands.Cog):
             if not raffle_data:
                 return await ctx.send("There is not an ongoing raffle with the name `{}`.".format(raffle))
 
-            if not ctx.author.id == raffle_data["owner"]:
+            if ctx.author.id != raffle_data["owner"]:
                 return await ctx.send("You are not the owner of this raffle.")
 
         existing_data = {
@@ -1156,7 +1157,7 @@ class Raffle(commands.Cog):
 
             diffs = box(f"{additions}\n{deletions}", lang="diff")
             update = tick("Raffle edited. The following conditions have been added/removed: {}".format(diffs))
-        
+
         else:
             update = tick("Raffle edited. No conditions were added or removed.")
 
