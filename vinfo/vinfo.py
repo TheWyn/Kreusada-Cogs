@@ -71,12 +71,13 @@ class Vinfo(commands.Cog):
 
     @staticmethod
     def check_attrs(module: types.ModuleType):
-        builtin = [sys.version_info[:3], None]
         for attr in attrs:
             if hasattr(module, attr) and checkattr(module, attr):
                 return [getattr(module, attr), attr]
-        if module.__name__ in stdlib_list(".".join([str(x) for x in sys.version_info[:2]])):
-            return builtin
+        if module.__name__ in stdlib_list(
+            ".".join(str(x) for x in sys.version_info[:2])
+        ):
+            return [sys.version_info[:3], None]
 
     # Commands
 

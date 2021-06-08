@@ -45,9 +45,9 @@ class GithubSkylines(commands.Cog):
         """Get your github skyline for a specified year."""
         await ctx.trigger_typing()
         async with self.session.get(self.skyline.format(git_username)) as session:
-            if not session.status == 200:
+            if session.status != 200:
                 return await ctx.send("Please provide a valid github username.")
-        if not year in [*range(2008, int(dt.now().strftime("%Y"))+1)]:
+        if year not in [*range(2008, int(dt.now().strftime("%Y")) + 1)]:
             return await ctx.send(
                 f"Please provide a valid year, between 2008 and {dt.now().strftime('%Y')}."
             )

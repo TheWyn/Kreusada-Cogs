@@ -57,7 +57,7 @@ class SpoilerChannel(commands.Cog):
     async def remove(self, ctx, channel: discord.TextChannel):
         """Remove a channel from the list of spoiler channels."""
         config = await self.config.guild(ctx.guild).channels()
-        if not channel.id in config:
+        if channel.id not in config:
             return await ctx.send("This channel is not a spoiler channel.")
         config.remove(channel.id)
         await self.config.guild(ctx.guild).channels.set(config)
@@ -68,10 +68,7 @@ class SpoilerChannel(commands.Cog):
         """List all the spoiler channels."""
         config = await self.config.guild(ctx.guild).channels()
         data = [self.bot.get_channel(x).mention for x in config]
-        if ctx.channel.id in config:
-            destination = ctx.author
-        else:
-            destination = ctx
+        destination = ctx.author if ctx.channel.id in config else ctx
         if not data:
             return await destination.send("There are no channels.")
         await destination.send(", ".join(data))
@@ -99,7 +96,7 @@ class SpoilerChannel(commands.Cog):
             return
         if not await self.bot.ignored_channel_or_guild(message):
             return
-        if not message.channel.id in channels:
+        if message.channel.id not in channels:
             return
         if message.attachments:
             for attachment in message.attachments:

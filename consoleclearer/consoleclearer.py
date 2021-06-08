@@ -50,10 +50,7 @@ class ConsoleClearer(commands.Cog):
         """
         Completely clears [botname]'s console.
         """
-        if os.name == 'posix':
-            cmd = "clear"
-        else:
-            cmd = "cls"
+        cmd = "clear" if os.name == 'posix' else "cls"
         bar = "_" * len(cleared)
         os.system(cmd)
         print(f"{header}\n\n{bar}\n\n{cleared}\n{bar}")

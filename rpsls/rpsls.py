@@ -62,23 +62,21 @@ class RPSLS(commands.Cog):
         if choice == "help":
             with open(Path(__file__).parent / "info.json") as fp:
                 return await ctx.send(json.load(fp)["diagram"])
-        if not choice in choices:
+        if choice not in choices:
             return await ctx.send("Please enter a valid choice.")
         b = self.converter(pick(choices))
         h = self.converter(choice)
         k = {0:[1,3],1:[2,4],2:[3,0],3:[4,1],4:[0,2]}
         if h == b:
-            title = f"{emojis[h]} vs {emojis[b]}"
             description = f"It's a draw."
             color = 0x87ceeb
         elif b in k[h]:
-            title = f"{emojis[h]} vs {emojis[b]}"
             description = f"You win!"
             color = 0x22ce70
         else:
-            title = f"{emojis[h]} vs {emojis[b]}"
             description = f"{ctx.me.name} wins."
             color = 0xff5151
+        title = f"{emojis[h]} vs {emojis[b]}"
         kwargs = {"title": title,"description": description, "color": color}
         if await ctx.embed_requested():
             await ctx.send(embed=discord.Embed(**kwargs))
