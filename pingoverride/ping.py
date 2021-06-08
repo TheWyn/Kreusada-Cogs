@@ -294,13 +294,10 @@ class PingOverride(commands.Cog):
         if reply and ctx.channel.permissions_for(ctx.me).read_message_history:
             kwargs["mention_author"] = mention
 
-        if isinstance(content, str):
-            kwargs["content"] = content
+        if not isinstance(content, str) and await ctx.embed_requested():
+            kwargs["embed"] = content
         else:
-            if await ctx.embed_requested():
-                kwargs["embed"] = content
-            else:
-                kwargs["content"] = content
+            kwargs["content"] = content
 
         if reply:
             await ctx.reply(**kwargs)

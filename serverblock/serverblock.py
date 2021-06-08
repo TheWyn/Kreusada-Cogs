@@ -57,7 +57,7 @@ class ServerBlock(commands.Cog):
         b.append(guild)
         await self.config.blacklist.set(b)
         msg = "Server added to blocklist."
-        if not guild in [g.id for g in self.bot.guilds]:
+        if guild not in [g.id for g in self.bot.guilds]:
             await ctx.send(msg)
         else:
             msg += (
